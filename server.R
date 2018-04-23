@@ -22,22 +22,34 @@ shinyInput = function(FUN, len, id, ...) {
 # Define server logic required to draw a histogram
 shinyServer(function(input, output) {
   output$cars = DT::renderDataTable({
-    data.frame(mtcars,
-               Rating = shinyInput(
-                 selectInput,
-                 nrow(mtcars),
-                 "selecter_",
-                 choices = 1:5,
-                 width = "60px"
-               ))
+    data.frame(
+      mtcars,
+      Rating = shinyInput(
+        selectInput,
+        nrow(mtcars),
+        "selecter",
+        choices = 1:5,
+        width = "60px"
+      ),
+      test = "1"
+    )
   }, selection = 'none', server = FALSE, escape = FALSE, options = list(
-    # paging = TRUE,
-    # preDrawCallback = JS(
-    #   'function() {
-    #   Shiny.unbindAll(this.api().table().node()); }'
-    # ),
-    # drawCallback = JS('function() {
-    #                   Shiny.bindAll(this.api().table().node()); } ')
-     ))
+    paging = TRUE,
+    preDrawCallback = JS(
+      'function() {
+      console.log("preDrawCallback");
+      Shiny.unbindAll(this.api().table().node()); }'
+    ),
+    drawCallback = JS(
+      'function() {
+      console.log("DrawCallback");
+      Shiny.bindAll(this.api().table().node()); } '
+    )
+    ))
   
-})
+  output$result = renderText({
+    if (FALSE == is.null(input$selecter1))
+      input$selecter1
+  })
+  
+  })
