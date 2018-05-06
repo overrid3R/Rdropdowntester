@@ -19,8 +19,12 @@ shinyInput = function(FUN, len, id, ...) {
   inputs
 }
 
+datacars = mtcars;
+datacars["rating"] = 1;
+
 # Define server logic required to draw a histogram
 shinyServer(function(input, output) {
+  
   output$cars = DT::renderDataTable({
     data.frame(
       mtcars,
@@ -35,21 +39,29 @@ shinyServer(function(input, output) {
     )
   }, selection = 'none', server = FALSE, escape = FALSE, options = list(
     paging = TRUE,
-    preDrawCallback = JS(
+    preDrawCallback = JS( #important pt dropdown reactiv
       'function() {
       console.log("preDrawCallback");
       Shiny.unbindAll(this.api().table().node()); }'
     ),
-    drawCallback = JS(
+    drawCallback = JS( #important pt dropdown reactiv
       'function() {
       console.log("DrawCallback");
       Shiny.bindAll(this.api().table().node()); } '
     )
-    ))
+  ))
   
-  output$result = renderText({
-    if (FALSE == is.null(input$selecter1))
-      input$selecter1
+  
+  observe({
+    for (dropdownid in grep("selecter", names(input), value = TRUE)) {
+      #extract row index from dropdownid (e.g. "selecter2" => 2)
+      rowindex = as.integer(substr(dropdownid, nchar("selecter")+1, nchar(dropdownid)))
+      
+      datacars$rating[rowindex] = input[[dropdownid]]
+    }
+    print(head(datacars))
   })
   
+  
   })
+
