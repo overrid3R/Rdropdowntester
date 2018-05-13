@@ -27,7 +27,7 @@ datacars["ratingProducator"] = "*"
 
 
 listaProducatori = list(
-  producatori = c("Mercedes" = 1, "BMW" = 2, "Porsche"= 3, "Mazda" = 4, "Other" = 5),
+  producatori = c("Mercedes" = 1, "Mercedes" = 2, "Porsche"= 3, "Mazda" = 4, "Other" = 5),
   ratingProducatori = c("*****" = 1, "****" = 2, "***" = 3, "**" = 4, "*" = 5)
 )
 
@@ -77,7 +77,7 @@ shinyServer(function(input, output, session) {
       datacars$producator[rowindex] = names(listaProducatori$producatori)[dropdownindex]
       datacars$ratingProducator[rowindex] = names(listaProducatori$ratingProducatori)[dropdownindex]
       
-      updateSelectInput(session, paste0("ratingProducator", rowindex), choices = listaProducatori$ratingProducatori, selected = dropdownindex)
+      updateSelectInput(session, inputId = paste0("ratingProducator", rowindex), selected = dropdownindex)
     }
     
     print(datacars)
